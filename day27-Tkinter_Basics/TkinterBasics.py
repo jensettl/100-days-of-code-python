@@ -2,6 +2,8 @@
 # can be used to create GUI applications
 # Tkinter is a built-in module in python
 
+# Properties of Tkinter: https://tcl.tk/man/tcl8.6/TkCmd
+
 # Mark Code BY SECTION below, SHIFT+Enter to start in interactive mode
 
 # ======================================================================================================================
@@ -13,17 +15,29 @@ root = Tk()  # creates a blank window
 # Title
 root.title("Tkinter Basics!")
 
-# Geometry
-# root.minsize(400, 400)  # width x height
-root.geometry("400x400")  # width x height
+# Window Size
+root.minsize(400, 400)  # width x height
 
 # Label
 myLabel = Label(root, text="Hello World!", font=("Helvetica", 24, "bold"))
 myLabel.pack()
 
+
 # Button
-myButton = Button(root, text="Click Me!", padx=50, pady=10)
-myButton.pack(side="bottom", expand=True)
+def button_click():
+    button["text"] = "Clicked!"
+    new_text = input.get()
+    myLabel.config(text=new_text)
+    # myLabel.config(text="Button Clicked!")
+
+
+button = Button(text="Click Me!", command=button_click)
+button.pack(side="top")
+
+
+# Entry
+input = Entry(width=50)
+input.pack()
 
 root.mainloop()  # keeps the window open
 
