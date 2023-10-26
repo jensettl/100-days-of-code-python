@@ -66,6 +66,37 @@ def clear_success_label():
     success_label.config(text="")
 
 
+# ---------------------------- SEARCH PASSWORD ------------------------------- #
+
+
+def search():
+    website = website_entry.get()
+    try:
+        with open("day29-PasswordManagerTk\passwords.json", "r") as file:
+            data = json.load(file)
+    except FileNotFoundError:
+        messagebox.showinfo(title="Error", message="No Data File Found.")
+    else:
+        if website in data:
+            email = data[website]["email"]
+            pwd = data[website]["password"]
+
+            email_entry.delete(0, END)
+            email_entry.insert(0, email)
+
+            password_entry.delete(0, END)
+            password_entry.insert(0, pwd)
+
+            success_label.config(
+                text=f"Found Password for {website}.\nCopied to clipboard!"
+            )
+            pyperclip.copy(pwd)
+        else:
+            messagebox.showinfo(
+                title="Error", message=f"No details for {website} exists."
+            )
+
+
 # ---------------------------- UI SETUP ------------------------------- #
 window = Tk()
 window.title("Password Manager")
@@ -80,9 +111,12 @@ canvas.grid(column=1, row=0)
 website_label = Label(text="Website:", pady=5)
 website_label.grid(column=0, row=1)
 
-website_entry = Entry(width=52)
+website_entry = Entry(width=30)
 website_entry.focus()
-website_entry.grid(column=1, row=1, columnspan=2)
+website_entry.grid(column=1, row=1, sticky="W")
+
+search_button = Button(text="Search", command=search)
+search_button.grid(column=2, row=1, sticky="E")
 
 # Email
 email_label = Label(text="Email/Username:", pady=5)
@@ -96,7 +130,7 @@ email_entry.grid(column=1, row=2, columnspan=2)
 password_label = Label(text="Password:", pady=5)
 password_label.grid(column=0, row=3)
 
-password_entry = Entry(width=25)
+password_entry = Entry(width=30)
 password_entry.grid(column=1, row=3, sticky="W")
 
 generate_button = Button(text="Generate Password", command=generate_password)
