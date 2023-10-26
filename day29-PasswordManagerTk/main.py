@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter import messagebox
 import pyperclip
+import json
 
 # ---------------------------- PASSWORD GENERATOR ------------------------------- #
 import random
@@ -28,22 +29,37 @@ def save():
     website = website_entry.get()
     email = email_entry.get()
     pwd = password_entry.get()
+    new_data = {website: {"email": email, "password": pwd}}
 
     if len(website) == 0 or len(pwd) == 0:
         messagebox.showinfo(
             title="Oops", message="Please don't leave any fields empty!"
         )
         return
+    else:
+        try:
+            with open("day29-PasswordManagerTk\passwords.json", "r") as file:
+                # Reading old data
+                data = json.load(file)
+        except FileNotFoundError:
+            with open("day29-PasswordManagerTk\passwords.json", "w") as file:
+                json.dump(new_data, file, indent=4)
+        else:
+            # Updating old data with new data
+            data.update(new_data)
+            with open("day29-PasswordManagerTk\passwords.json", "w") as file:
+                # Write updated data to file
+                json.dump(data, file, indent=4)
 
-    with open("day29-PasswordManagerTk\passwords.txt", "a") as file:
-        file.write(f"{website} | {email} | {pwd}\n")
+        finally:
+            # Clear fields
+            website_entry.delete(0, END)
+            password_entry.delete(0, END)
+            website_entry.focus()
 
-        success_label.config(text=f"Password for {website} Saved!")
-        window.after(2000, clear_success_label)
-
-        website_entry.delete(0, END)
-        password_entry.delete(0, END)
-        website_entry.focus()
+            # Show success message
+            success_label.config(text=f"Password for {website} Saved!")
+            window.after(2000, clear_success_label)
 
 
 def clear_success_label():
